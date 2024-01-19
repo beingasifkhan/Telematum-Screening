@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"log"
 
-	_ "github.com/lib/pq" // Import the PostgreSQL driver
+	_ "github.com/lib/pq" 
 )
 
-// CreateConnection creates a connection to a PostgreSQL database
+// CreateConnection creates a connection to a PostgreSQL database //using postgres here instead of mySQL
 func CreateConnection() (*sql.DB, error) {
 	connStr := "host=localhost user=postgres password=25205089pAr@ dbname=screening port=5432 sslmode=disable"
 

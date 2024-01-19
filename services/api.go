@@ -10,7 +10,7 @@ import (
 
 func SetupJsonApi() {
 	http.HandleFunc("/createUser", func(w http.ResponseWriter, r *http.Request) {
-		// create mysql connection
+		// create postgres connection
 		conn, err := database.CreateConnection()
 		if err != nil {
 			log.Println("error establishing database connection:", err)
@@ -35,7 +35,7 @@ func SetupJsonApi() {
 
 	})
 	http.HandleFunc("/updateUser", func(w http.ResponseWriter, r *http.Request) {
-		// create mysql connection
+		// create postgres connection
 		conn, err := database.CreateConnection()
 		if err != nil {
 			log.Println("error establishing database connection:", err)
@@ -44,12 +44,12 @@ func SetupJsonApi() {
 		}
 		defer conn.Close()
 
-		// /updateUser
+		// updateUser
 		name := r.FormValue("name")
 		email := r.FormValue("email")
 		id := r.FormValue("id")
 
-		// Check if the user with the specified ID exists
+		// Check if the user with the specified id exists
 		exists, err := userExists(conn, id)
 		if err != nil {
 			log.Println("error checking if user exists:", err)
@@ -58,11 +58,11 @@ func SetupJsonApi() {
 		}
 
 		if !exists {
-			http.Error(w, "User not found", http.StatusNotFound)
+			http.Error(w, "user not found", http.StatusNotFound)
 			return
 		}
 
-		// User exists, proceed with the update
+		// if user exists update the details
 		query := "UPDATE users SET name=$1, email=$2 WHERE id=$3"
 		result, err := conn.Exec(query, name, email, id)
 		if err != nil {
@@ -72,11 +72,12 @@ func SetupJsonApi() {
 		}
 
 		fmt.Println("result:", result)
-		w.Write([]byte("User updated successfully!"))
+		w.Write([]byte("user updated successfully!"))
 
 	})
 
 }
+//while updating the user checking if the user with particular user id exists 
 func userExists(conn *sql.DB, userID string) (bool, error) {
 	var count int
 	query := "SELECT COUNT(*) FROM users WHERE id = $1"
